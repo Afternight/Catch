@@ -72,22 +72,22 @@ type Rectifier struct {
 	Method string
 }
 
-func (g *Rectifier) EnactRectifier() (interface{}, Log, error){
+func (g *Rectifier) EnactRectifier() (interface{}, int, Log, error){
 	toBeSentBytes, _ := json.Marshal(g)
 
 	req, formErr := http.NewRequest(g.Method,fmt.Sprintf("%s?%s",g.TargetDomain,g.TargetQuery), bytes.NewBuffer(toBeSentBytes))
 	if formErr != nil {
-		return nil, Log{}, formErr
+		return nil, 500, Log{}, formErr
 	}
 
 	resp, err := http.DefaultClient.Do(req)
 	if err !=  nil {
-		return nil, Log{},err
+		return nil, 500, Log{},err
 	}
 
-	object, extLog := ReceiveResponse(resp)
+	object, code, extLog := ReceiveResponse(resp)
 
-	return object,extLog,nil
+	return object, code, extLog,nil
 }
 
 func (g *Log) MergeLogs(newLog Log) {
@@ -134,7 +134,7 @@ func SendResponse(c *gin.Context, code int, log Log, bodyContent interface{}){
 }
 
 //Function to handle errors and send them to logging service
-func ReceiveResponse(response *http.Response)(interface{},Log){
+func ReceiveResponse(response *http.Response)(interface{}, int, Log){
 	buf := bytes.NewBuffer(make([]byte, 0, response.ContentLength))
 	_, _ = buf.ReadFrom(response.Body)
 
@@ -142,7 +142,7 @@ func ReceiveResponse(response *http.Response)(interface{},Log){
 
 	json.Unmarshal(buf.Bytes(),&toBeReceived)
 
-	return toBeReceived.Body, toBeReceived.Log
+	return toBeReceived.Body, response.StatusCode, toBeReceived.Log
 }
 
 //Function to parse byte stream and decode Log
