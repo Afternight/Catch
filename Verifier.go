@@ -150,3 +150,10 @@ func HandleKnockout(c *gin.Context,code int, log Log){
 	//todo add service sending of error here
 	SendResponse(c,code,log,nil)
 }
+
+func HandleKnockoutPunch(c *gin.Context,code int, origin string, punch error){
+	var log Log
+	var nilRectifier Rectifier
+	log.AddNewFailureFromError(code,origin,punch,true,nilRectifier)
+	HandleKnockout(c,code,log)
+}
