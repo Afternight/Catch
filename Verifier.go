@@ -150,11 +150,16 @@ func ReceiveResponse(response *http.Response)(interface{}, int, Log){
 	toBeReceived := new(fullResponse)
 
 	json.Unmarshal(buf.Bytes(),&toBeReceived)
-	fmt.Println("Catch")
-	fmt.Println(toBeReceived)
-	fmt.Println(buf.Bytes())
-	fmt.Println("End")
 	return toBeReceived.Body, response.StatusCode, toBeReceived.Log
+}
+
+func ReceiveResponseOverride(response *http.Response, objectOverride *interface{}) (*interface{}, int){
+	buf := bytes.NewBuffer(make([]byte, 0, response.ContentLength))
+	_, _ = buf.ReadFrom(response.Body)
+
+	json.Unmarshal(buf.Bytes(),&objectOverride)
+
+	return objectOverride,response.StatusCode
 }
 
 //Function to parse byte stream and decode Log
