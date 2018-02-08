@@ -9,6 +9,8 @@ import (
 	"encoding/json"
 	"strconv"
 	"fmt"
+	"github.com/Afternight/Catch"
+	"bitbucket.org/tokom_/core_sdk"
 )
 
 const JsonByteStreamHeader = "application/json; charset=utf-8"
@@ -40,8 +42,8 @@ func HandleRequestErrors(c *gin.Context, code int,err error) {
 }
 
 type fullResponse struct {
-	Log Log
 	Body interface{}
+	Log Log
 }
 
 //Log type
@@ -70,6 +72,15 @@ type Rectifier struct {
 	TargetDomain string
 	TargetQuery string
 	Method string
+}
+
+func CreateRectifierWithPath(method string, domain string, path string, query string, req interface{}) (Catch.Rectifier){
+	var rectifier Catch.Rectifier
+	rectifier.Method = method
+	rectifier.Rectify = req
+	rectifier.TargetDomain = fmt.Sprintf("%s%s",domain,path)
+	rectifier.TargetQuery = query
+	return rectifier
 }
 
 func (g *Rectifier) EnactRectifier() (interface{}, int, Log, error){
