@@ -59,6 +59,10 @@ type Rectifier struct {
 	Method string
 }
 
+type IsLogged interface {
+	GetLog()(Log)
+}
+
 func CreateRectifierWithPath(method string, domain string, path string, query string, req interface{}) (Rectifier){
 	var rectifier Rectifier
 	rectifier.Method = method
