@@ -10,7 +10,6 @@ import (
 	"strconv"
 	"fmt"
 	"github.com/Afternight/Catch"
-	"bitbucket.org/tokom_/core_sdk"
 )
 
 const JsonByteStreamHeader = "application/json; charset=utf-8"
