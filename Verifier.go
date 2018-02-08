@@ -9,7 +9,6 @@ import (
 	"encoding/json"
 	"strconv"
 	"fmt"
-	"github.com/Afternight/Catch"
 )
 
 const JsonByteStreamHeader = "application/json; charset=utf-8"
@@ -73,8 +72,8 @@ type Rectifier struct {
 	Method string
 }
 
-func CreateRectifierWithPath(method string, domain string, path string, query string, req interface{}) (Catch.Rectifier){
-	var rectifier Catch.Rectifier
+func CreateRectifierWithPath(method string, domain string, path string, query string, req interface{}) (Rectifier){
+	var rectifier Rectifier
 	rectifier.Method = method
 	rectifier.Rectify = req
 	rectifier.TargetDomain = fmt.Sprintf("%s%s",domain,path)
