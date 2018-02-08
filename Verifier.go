@@ -150,7 +150,10 @@ func ReceiveResponse(response *http.Response)(interface{}, int, Log){
 	toBeReceived := new(fullResponse)
 
 	json.Unmarshal(buf.Bytes(),&toBeReceived)
-
+	fmt.Println("Catch")
+	fmt.Println(toBeReceived)
+	fmt.Println(buf.Bytes())
+	fmt.Println("End")
 	return toBeReceived.Body, response.StatusCode, toBeReceived.Log
 }
 
