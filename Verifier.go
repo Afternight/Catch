@@ -44,6 +44,10 @@ func (g *Log) AddNewFailureFromError(code int, origin string, originError error,
 	g.AddFailure(newFailure)
 }
 
+func (g *Log) GetLog() (Log){
+	return *g
+}
+
 type Failure struct {
 	Code int
 	Origin string
@@ -84,15 +88,15 @@ func CreateFailureFromError(code int, origin string,originError error,isFatal bo
 }
 
 //Function to parse byte stream and decode Log
-func HandleKnockout(c *gin.Context,code int, log Log){
+func HandleKnockout(c *gin.Context,code int, obj IsLogged){
 	//todo add service sending of error here
-	sendBytes, _ :=json.Marshal(log)
+	sendBytes, _ :=json.Marshal(obj)
 	c.Header("Content-Length", strconv.Itoa(len(sendBytes)))
 	c.Data(code,JsonByteStreamHeader,sendBytes)
 }
 
 func HandleKnockoutPunch(c *gin.Context,code int, origin string, punch error){
-	var log Log
+	log := new(Log)
 	var nilRectifier Rectifier
 	log.AddNewFailureFromError(code,origin,punch,true,nilRectifier)
 	HandleKnockout(c,code,log)
