@@ -87,7 +87,7 @@ func CreateFailureFromError(code int, origin string,originError error,isFatal bo
 	return newFail
 }
 
-//Function to parse byte stream and decode Log
+//Function to knockout due to an error, sending back the isLogged object (can just be log or full object in itself)
 func HandleKnockout(c *gin.Context,code int, obj IsLogged){
 	//todo add service sending of error here
 	sendBytes, _ :=json.Marshal(obj)
@@ -95,9 +95,13 @@ func HandleKnockout(c *gin.Context,code int, obj IsLogged){
 	c.Data(code,JsonByteStreamHeader,sendBytes)
 }
 
+//A knockout punch is a non-rectifiable error persistent to the crt sent
+//ie a formatting issue or such that the we cannot create a rectifier
 func HandleKnockoutPunch(c *gin.Context,code int, origin string, punch error){
 	log := new(Log)
 	var nilRectifier Rectifier
 	log.AddNewFailureFromError(code,origin,punch,true,nilRectifier)
 	HandleKnockout(c,code,log)
 }
+
+
